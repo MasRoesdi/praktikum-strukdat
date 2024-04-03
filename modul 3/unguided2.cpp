@@ -43,14 +43,22 @@ public:
 
         if (head != nullptr) {
             Node* current = head;
-            int i;
-            while (current != nullptr && i < index) {
-                current = current->prev;
+            int i = 0;
+            while (current != nullptr && i < index - 1) {
+                current = current->next;
                 i++;
             }
-            newNode->prev = current;
-            newNode->next = current->next;
-            current->next->prev = newNode; 
+            if (current == nullptr) {
+                newNode->next = nullptr;
+                newNode->prev = tail;
+                tail->next = newNode;
+                tail = newNode;
+            } else {
+                newNode->next = current;
+                newNode->prev = current->prev;
+                current->prev->next = newNode;
+                current->prev = newNode;
+            }
         } else {
             push(name, price);
         }
@@ -78,17 +86,19 @@ public:
         }
         Node* temp = head;
 
-        int i;
-        while (temp->next != nullptr && i < index) {
-            temp = temp->prev;
+        int i = 0;
+        while (temp != nullptr && i < index - 1) {
+            temp = temp->next;
+            i++;
         }
 
-        temp->prev->prev = temp->prev->prev
-        
-        if (head != nullptr) {
-            head->prev = nullptr;
-        } else {
+        if (temp == nullptr) {
             return;
+        }
+        
+        if (temp->prev != nullptr && temp->next != nullptr) {
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
         }
         
         delete temp;
@@ -108,6 +118,23 @@ public:
         return false;
     }
 
+    bool updateAt(string newName, int newprice, int index) {
+        Node* current = head;
+        
+        int i = 0;
+        while (current != nullptr && i < index - 1) {
+            current = current->next;
+            i++;
+        }
+        if (current != nullptr) {
+            current->name = newName;
+            current->price = newprice;
+            return true;
+        }
+
+        return false;
+    }
+
     void deleteAll() {
         Node* current = head;
         while (current != nullptr) {
@@ -120,16 +147,16 @@ public:
     }
 
     void display() {
-        string line = string(25, '=');
+        string line = string(51, '-');
         Node* current = head;
         cout << line << endl;
-        cout << "| Nama Produk " << setw(16) << left << "| Harga " << setw(8) << left << "|" << endl;
+        cout << setw(32) << left << "| Nama Produk " << setw(18) << left << "| Harga " << "|" << endl;
         cout << line << endl;
         while (current != nullptr) {
-            cout << "| " << current->name << setw(16) << left << current->price << setw(8) << left << "|" << endl;  
+            cout << "| " << setw(30) << left << current->name << "| " << setw(16) << left << current->price  << "|" << endl;  
             current = current->next;
         }
-        cout << endl;
+        cout << line << endl;
     }
 };
 
@@ -186,13 +213,15 @@ int main() {
                 cin >> name;
                 cout << "Masukkan harga produk : ";
                 cin >> price;
-                cout << "Masukkan index produk : ";
+                cout << "Masukkan urutan produk : ";
                 cin >> index;
                 list.pushAt(name, price, index);
                 break;
             }
             case 5: {
-
+                cout << "Masukkan urutan produk : ";
+                cin >> index;
+                list.popAt(index);
                 break;
             }
             case 6: {

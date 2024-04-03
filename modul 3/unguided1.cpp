@@ -194,7 +194,7 @@ void tampil() {
         Node* bantu = head;
         cout << "Daftar data :" << endl;
         while (bantu != NULL) {
-            cout << bantu->nama << ends << bantu->umur;
+            cout << bantu->nama << " : " << bantu->umur << endl;
             bantu = bantu->next;
         }
         cout << endl;
